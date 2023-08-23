@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="D_ShopOrderModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Sh_Customer">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Family" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FullName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Sh_Order" Relationship="Self.FK_Sh_Order_Sh_Customer" FromRole="Sh_Customer" ToRole="Sh_Order" />
+  </EntityType>
+  <EntityType Name="Sh_Order">
+    <Key>
+      <PropertyRef Name="OrderID" />
+    </Key>
+    <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CustomerID" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Sh_Customer" Relationship="Self.FK_Sh_Order_Sh_Customer" FromRole="Sh_Order" ToRole="Sh_Customer" />
+    <NavigationProperty Name="Sh_OrderDet" Relationship="Self.FK_Sh_OrderDet_Sh_Order" FromRole="Sh_Order" ToRole="Sh_OrderDet" />
+  </EntityType>
+  <EntityType Name="Sh_OrderDet">
+    <Key>
+      <PropertyRef Name="OrderDetID" />
+    </Key>
+    <Property Name="OrderDetID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="OrderID" Type="Int32" />
+    <Property Name="ProductID" Type="Int32" />
+    <Property Name="Count" Type="Int32" />
+    <Property Name="Price" Type="Int32" />
+    <Property Name="PriceAll" Type="Int32" />
+    <NavigationProperty Name="Sh_Order" Relationship="Self.FK_Sh_OrderDet_Sh_Order" FromRole="Sh_OrderDet" ToRole="Sh_Order" />
+    <NavigationProperty Name="Sh_Product" Relationship="Self.FK_Sh_OrderDet_Sh_Product" FromRole="Sh_OrderDet" ToRole="Sh_Product" />
+  </EntityType>
+  <EntityType Name="Sh_Product">
+    <Key>
+      <PropertyRef Name="ProductID" />
+    </Key>
+    <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ProductName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Barcode" Type="Int32" Nullable="false" />
+    <Property Name="Price" Type="Int32" Nullable="false" />
+    <Property Name="Count" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Sh_OrderDet" Relationship="Self.FK_Sh_OrderDet_Sh_Product" FromRole="Sh_Product" ToRole="Sh_OrderDet" />
+    <NavigationProperty Name="Sh_Store" Relationship="Self.FK_Sh_Store_Sh_Product" FromRole="Sh_Product" ToRole="Sh_Store" />
+  </EntityType>
+  <EntityType Name="Sh_Store">
+    <Key>
+      <PropertyRef Name="StoreID" />
+    </Key>
+    <Property Name="StoreID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Count" Type="Int32" Nullable="false" />
+    <Property Name="ProductID" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Sh_Product" Relationship="Self.FK_Sh_Store_Sh_Product" FromRole="Sh_Store" ToRole="Sh_Product" />
+  </EntityType>
+  <EntityType Name="Sh_User">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <Association Name="FK_Sh_Order_Sh_Customer">
+    <End Role="Sh_Customer" Type="Self.Sh_Customer" Multiplicity="1" />
+    <End Role="Sh_Order" Type="Self.Sh_Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sh_Customer">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Sh_Order">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sh_OrderDet_Sh_Order">
+    <End Role="Sh_Order" Type="Self.Sh_Order" Multiplicity="0..1" />
+    <End Role="Sh_OrderDet" Type="Self.Sh_OrderDet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sh_Order">
+        <PropertyRef Name="OrderID" />
+      </Principal>
+      <Dependent Role="Sh_OrderDet">
+        <PropertyRef Name="OrderID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sh_OrderDet_Sh_Product">
+    <End Role="Sh_Product" Type="Self.Sh_Product" Multiplicity="0..1" />
+    <End Role="Sh_OrderDet" Type="Self.Sh_OrderDet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sh_Product">
+        <PropertyRef Name="ProductID" />
+      </Principal>
+      <Dependent Role="Sh_OrderDet">
+        <PropertyRef Name="ProductID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sh_Store_Sh_Product">
+    <End Role="Sh_Product" Type="Self.Sh_Product" Multiplicity="1" />
+    <End Role="Sh_Store" Type="Self.Sh_Store" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sh_Product">
+        <PropertyRef Name="ProductID" />
+      </Principal>
+      <Dependent Role="Sh_Store">
+        <PropertyRef Name="ProductID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="D_ShopOrderEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Sh_Customer" EntityType="Self.Sh_Customer" />
+    <EntitySet Name="Sh_Order" EntityType="Self.Sh_Order" />
+    <EntitySet Name="Sh_OrderDet" EntityType="Self.Sh_OrderDet" />
+    <EntitySet Name="Sh_Product" EntityType="Self.Sh_Product" />
+    <EntitySet Name="Sh_Store" EntityType="Self.Sh_Store" />
+    <EntitySet Name="Sh_User" EntityType="Self.Sh_User" />
+    <AssociationSet Name="FK_Sh_Order_Sh_Customer" Association="Self.FK_Sh_Order_Sh_Customer">
+      <End Role="Sh_Customer" EntitySet="Sh_Customer" />
+      <End Role="Sh_Order" EntitySet="Sh_Order" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sh_OrderDet_Sh_Order" Association="Self.FK_Sh_OrderDet_Sh_Order">
+      <End Role="Sh_Order" EntitySet="Sh_Order" />
+      <End Role="Sh_OrderDet" EntitySet="Sh_OrderDet" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sh_OrderDet_Sh_Product" Association="Self.FK_Sh_OrderDet_Sh_Product">
+      <End Role="Sh_Product" EntitySet="Sh_Product" />
+      <End Role="Sh_OrderDet" EntitySet="Sh_OrderDet" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sh_Store_Sh_Product" Association="Self.FK_Sh_Store_Sh_Product">
+      <End Role="Sh_Product" EntitySet="Sh_Product" />
+      <End Role="Sh_Store" EntitySet="Sh_Store" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
